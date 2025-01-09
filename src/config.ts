@@ -1,10 +1,10 @@
 import type { NavigationLink, Site } from './types.ts'
 
 export const SITE: Site = {
-    author: 'Godruoyi',
-    url: 'https://godruoyi.com',
-    title: '连波的闲谈杂鱼',
-    description: 'Godruoyi\'s personal blog, I enjoy the process of building something using any technology stack',
+    author: 'Draco-f',
+    url: 'https://gblog-draco.pages.dev/',
+    title: 'Draco的博客随想',
+    description: 'Draco-f\'s personal blog, I enjoy the process of building something using any technology stack',
     shortDescription: '',
 }
 
