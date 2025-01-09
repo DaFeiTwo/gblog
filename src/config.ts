@@ -53,15 +53,15 @@ export const Settings = {
         // process reports an error when used locally,
         // and meta cannot retrieve environment variables in Cloudflare environment.
         // enable: !!(import.meta.env.COMMENT_ENABLE),
-        enable: !!(process.env.COMMENT_ENABLE),
+        enable: true,
 
         // please visit https://giscus.app/ to learn how to configure it.
         // You can also check out this article: https://liruifengv.com/posts/add-comments-to-astro/.
         giscus: {
-            repo: 'godruoyi/gblog',
-            repoId: 'MDEwOlJlcG9zaXRvcnkxMjcyODI0NzA',
+            repo: 'DaFeiTwo/gblog',
+            repoId: 'R_kgDONnadMg',
             category: 'Announcements',
-            categoryId: 'DIC_kwDOB5YtJs4CfZnX',
+            categoryId: 'DIC_kwDONnadMs4Cl3mJ',
             darkThem: 'noborder_gray',
             lightThem: 'light',
         },
