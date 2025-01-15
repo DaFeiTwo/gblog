@@ -83,7 +83,7 @@ npm run dev
 
 
 # 相关文档
-1. 部署构建网址 Cloudflare：[https://dash.cloudflare.com/041d59dc29ac236fcd600667f2057ef7/pages/view/gblog-draco](https://dash.cloudflare.com/041d59dc29ac236fcd600667f2057ef7/pages/view/gblog-draco)
+1. 部署构建网址 Cloudflare：[https://dash.cloudflare.com/](https://dash.cloudflare.com/)
 2. astro 文档：[https://docs.astro.build/zh-cn/guides/deploy/cloudflare/#how-to-deploy-a-site-with-git](https://docs.astro.build/zh-cn/guides/deploy/cloudflare/#how-to-deploy-a-site-with-git)
 3. github 地址：[https://github.com/DaFeiTwo/gblog](https://github.com/DaFeiTwo/gblog)
 
