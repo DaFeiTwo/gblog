@@ -14,9 +14,10 @@ const posts: CollectionEntry<'posts'>[] = (await getCollection('posts')).sort(
 ---
 
 <BaseLayout>
+    <!-- title=`Hello, <span class="text-yellow-500 dark:text-yellow-400">GBlog</span>` -->
     <HeroSection
-        title=`Hello, <span class="text-yellow-500 dark:text-yellow-400">GBlog</span>`
-        subTitle="Hi, Welcome to My Blog, gblog is an open-source, simple, and beautiful blog built with Astro."
+        title=`<span class="text-yellow-500 dark:text-yellow-400">人微言轻</span>`
+        subTitle="欢迎来到人微言轻，记录着普通人这普普通通的一生。"
         primaryBtn="Explore Posts"
         primaryBtnURL="/posts"
         src={blogHeroImg}

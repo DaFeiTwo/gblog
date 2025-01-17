@@ -1,4 +1,4 @@
 ---
-title: 'All In Astro 🔖'
-description: 'The web framework for content-driven websites'
+title: '博客日志'
+description: '主要用于记录对本博客网址的新增/修改的功能，以供后续参考。'
 ---

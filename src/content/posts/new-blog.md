@@ -1,10 +1,10 @@
 ---
-title: "首次创建博客记录"
+title: "部署博客记录"
 description: "首次使用Cloudflare构建了一个属于自己的博客，集成了giscus进行文章评论"
 pubDate: "2025-01-09 20:54:00"
 category: "astro"
-banner: "@images/banners/gblog-2.jpg"
-banner2: "@images/banners/gblog.jpg"
+banner: "@images/banners/why-astro-2.webp"
+banner2: "@images/banners/why-astro.jpg"
 tags: ["Gblog", "Astro"]
 selected: true
 ---

@@ -6,6 +6,7 @@ import Image from '@components/ui/images/Image.astro'
 import { timeago } from '@support/time'
 import { Settings } from '../../config'
 import { SITE } from '@/config'
+import markdownToc from 'markdown-toc'
 
 export async function getStaticPaths() {
     const posts = await getCollection('posts')
@@ -19,6 +20,17 @@ type Props = CollectionEntry<'posts'>
 
 const post = Astro.props
 const { Content, remarkPluginFrontmatter } = await post.render()
+
+// 获取原始 Markdown 内容
+const rawContent = post.body
+
+// 使用 markdown-toc 生成目录
+const toc = markdownToc(rawContent)
+const headings = toc.json.map((item: any) => ({
+    depth: item.lvl,
+    slug: item.slug,
+    text: item.content
+}))
 
 // 报错原因：pop后可能返回undefined，而这里定义的category不能是undefined；所以需要确保category总是一个有效的对象
 // const category: CollectionEntry<'categories'> = (await getCollection('categories')).filter(
@@ -38,9 +50,9 @@ const formattedDate = pubDate.toLocaleString('zh-CN', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-    // hour: '2-digit',
-    // minute: '2-digit',
-    // second: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
     hour12: false, // 24小时制
 }).replace(/\//g, '-');
 const relativeTime = timeago(post.data.pubDate); //显示为几天前
@@ -69,107 +81,234 @@ const relativeTime = timeago(post.data.pubDate); //显示为几天前
         }],
     }}
 >
-    <section class="mx-auto max-w-6xl px-4 pb-12 pt-8 sm:px-6 lg:px-8 lg:pt-12">
-        <div class="shadow-none sm:shadow-sm mt-4 sm:mt-0">
-            <div class="max-w-6xl">
-                <Image
-                    class="w-full object-cover rounded-tl-sm rounded-tr-sm"
-                    src={post.data.banner}
-                    alt={post.data.title}
-                    draggable="false"
-                    format="avif"
-                    loading="lazy"
-                    inferSize={true}
-                />
-            </div>
-            <div class="sm:dark:bg-neutral-900/30 sm:bg-neutral-100 px-0 sm:px-6 md:px-10 lg:px-14 py-6">
-                <div class="mb-10">
-                    <h2 class="block text-balance text-3xl font-bold tracking-tight text-neutral-800 dark:text-neutral-300 md:text-4xl lg:text-5xl">
-                        {post.data.title}
-                    </h2>
-                    <ol class="flex items-center whitespace-nowrap mt-2">
-                        <li class="inline-flex items-center">
-                            <a
-                                class="flex items-center text-sm text-orange-400 hover:text-orange-500 focus:outline-none focus:text-orange-500"
-                                href=`/categories/${category.slug}`
-                            >
-                                {category?.data?.title}
-                            </a>
-                            <svg
-                                class="flex-shrink-0 size-5 text-neutral-500 dark:text-neutral-600 mx-2"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
-                            >
-                                <path d="M6 13L10 3" stroke="currentColor" stroke-linecap="round"></path>
-                            </svg>
-                        </li>
-                        <li class="inline-flex items-center text-sm text-neutral-500 hover:text-neutral-600 focus:outline-none focus:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-400 dark:focus:text-neutral-400">
-                            <!-- {timeago(post.data.pubDate)} -->
-                            <!-- {post.data.pubDate}({timeago(post.data.pubDate)}) -->
-                            {formattedDate} 
-                            <!-- ({relativeTime}) -->
-                            <svg
-                                class="flex-shrink-0 size-5 text-neutral-500 dark:text-neutral-600 mx-2"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
-                            >
-                                <path d="M6 13L10 3" stroke="currentColor" stroke-linecap="round"></path>
-                            </svg>
-                        </li>
-                        <li
-                            class="inline-flex items-center text-sm text-neutral-500 hover:text-neutral-600 focus:outline-none focus:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-400 dark:focus:text-neutral-400"
-                            aria-current="page"
-                        >
-                            {remarkPluginFrontmatter.minutesRead}
-                        </li>
-                    </ol>
+    <div class="relative">
+        <section class="mx-auto max-w-6xl px-4 pb-12 pt-8 sm:px-6 lg:px-8 lg:pt-12">
+            <div class="shadow-none sm:shadow-sm mt-4 sm:mt-0">
+                <!-- 博客首页图片 -->
+                <div class="max-w-6xl">
+                    <Image
+                        class="w-full object-cover rounded-tl-sm rounded-tr-sm"
+                        src={post.data.banner}
+                        alt={post.data.title}
+                        draggable="false"
+                        format="avif"
+                        loading="lazy"
+                        inferSize={true}
+                    />
                 </div>
-
-                <article class="prose prose-blog sm:prose-lg dark:prose-invert max-w-none">
-                    <Content />
-                </article>
-
-                <div class="mt-10 md:mt-14 mx-auto grid max-w-screen-lg gap-y-5 sm:flex sm:items-center sm:justify-between sm:gap-y-0">
-                    <div class="flex flex-wrap gap-x-2 gap-y-1 sm:flex-nowrap sm:items-center sm:gap-y-0">
-                        {
-                            tags.map((tag: string) => (
-                                <span class="inline-flex items-center gap-x-1.5 rounded-lg bg-neutral-400/30 px-3 py-1.5 text-xs font-medium text-neutral-700 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring dark:bg-neutral-700/60 dark:text-neutral-300">
-                                    {tag}
-                                </span>
-                            ))
-                        }
+                <div class="sm:dark:bg-neutral-900/30 sm:bg-neutral-100 px-0 sm:px-6 md:px-10 lg:px-14 py-6">
+                    <div class="mb-10">
+                        <h2 class="block text-balance text-3xl font-bold tracking-tight text-neutral-800 dark:text-neutral-300 md:text-4xl lg:text-5xl">
+                            {post.data.title}
+                        </h2>
+                        <ol class="flex items-center whitespace-nowrap mt-2">
+                            <li class="inline-flex items-center">
+                                <a
+                                    class="flex items-center text-sm text-orange-400 hover:text-orange-500 focus:outline-none focus:text-orange-500"
+                                    href=`/categories/${category.slug}`
+                                >
+                                    {category?.data?.title}
+                                </a>
+                                <svg
+                                    class="flex-shrink-0 size-5 text-neutral-500 dark:text-neutral-600 mx-2"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M6 13L10 3" stroke="currentColor" stroke-linecap="round"></path>
+                                </svg>
+                            </li>
+                            <li class="inline-flex items-center text-sm text-neutral-500 hover:text-neutral-600 focus:outline-none focus:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-400 dark:focus:text-neutral-400">
+                                <!-- {timeago(post.data.pubDate)} -->
+                                <!-- {post.data.pubDate}({timeago(post.data.pubDate)}) -->
+                                {formattedDate} 
+                                <!-- ({relativeTime}) -->
+                                <svg
+                                    class="flex-shrink-0 size-5 text-neutral-500 dark:text-neutral-600 mx-2"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M6 13L10 3" stroke="currentColor" stroke-linecap="round"></path>
+                                </svg>
+                            </li>
+                            <li
+                                class="inline-flex items-center text-sm text-neutral-500 hover:text-neutral-600 focus:outline-none focus:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-400 dark:focus:text-neutral-400"
+                                aria-current="page"
+                            >
+                                {remarkPluginFrontmatter.minutesRead}
+                            </li>
+                        </ol>
                     </div>
-                    <!--<div class="flex items-center justify-end gap-x-1.5">-->
-                    <!--    <Bookmark />-->
-                    <!--    <div class="mx-3 block h-4 border-e border-neutral-400 dark:border-neutral-500"></div>-->
-                    <!--    <div class="inline-flex">-->
-                    <!--        <SocialShare pageTitle={post.data.title} />-->
-                    <!--    </div>-->
-                    <!--</div>-->
+
+                    <article class="prose prose-blog sm:prose-lg dark:prose-invert max-w-none">
+                        <Content />
+                    </article>
+
+                    <div class="mt-10 md:mt-14 mx-auto grid max-w-screen-lg gap-y-5 sm:flex sm:items-center sm:justify-between sm:gap-y-0">
+                        <div class="flex flex-wrap gap-x-2 gap-y-1 sm:flex-nowrap sm:items-center sm:gap-y-0">
+                            {
+                                tags.map((tag: string) => (
+                                    <span class="inline-flex items-center gap-x-1.5 rounded-lg bg-neutral-400/30 px-3 py-1.5 text-xs font-medium text-neutral-700 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring dark:bg-neutral-700/60 dark:text-neutral-300">
+                                        {tag}
+                                    </span>
+                                ))
+                            }
+                        </div>
+                        <!-- <div class="flex items-center justify-end gap-x-1.5">-->
+                        <!--    <Bookmark />-->
+                        <!--    <div class="mx-3 block h-4 border-e border-neutral-400 dark:border-neutral-500"></div>-->
+                        <!--    <div class="inline-flex">-->
+                        <!--        <SocialShare pageTitle={post.data.title} />-->
+                        <!--    </div>-->
+                        <!--</div> -->
+                    </div>
                 </div>
             </div>
-        </div>
-        {
-            Settings.Comment.enable && (
+
+            {Settings.Comment.enable && (
                 <div class="my-10">
                     <BlogComments client:only="react" />
                 </div>
-            )
-        }
-    </section>
+            )}
+        </section>
+
+        <!-- 目录 -->
+        <div class="hidden lg:block fixed top-[7.5rem]" style="right: 5.0rem; width: 16rem;">
+            <div class="h-full">
+                <div class="bg-white dark:bg-neutral-900/30 p-4 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700" 
+                     style="max-height: calc(100vh - 32rem); height: auto;">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-semibold text-neutral-800 dark:text-neutral-200">目录</h3>
+                        <button id="toc-toggle" class="text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="toc-content" class="space-y-2 dark:text-neutral-200 overflow-y-auto" style="max-height: calc(100vh - 36rem);">
+                        {headings && headings.length > 0 ? (
+                            headings.map((heading) => (
+                                <a
+                                    href={`#${heading.slug}`}
+                                    class={`
+                                        block text-sm hover:text-orange-500 transition-colors duration-200
+                                        ${heading.depth === 1 ? 'font-bold text-base pl-0' : ''}
+                                        ${heading.depth === 2 ? 'font-semibold pl-2' : ''}
+                                        ${heading.depth === 3 ? 'pl-4' : ''}
+                                        ${heading.depth === 4 ? 'pl-6 text-[13px]' : ''}
+                                        ${heading.depth === 5 ? 'pl-8 text-[13px]' : ''}
+                                        ${heading.depth === 6 ? 'pl-10 text-[13px]' : ''}
+                                        ${heading.depth > 1 ? 'text-neutral-600 dark:text-neutral-400' : 'text-neutral-800 dark:text-neutral-200'}
+                                    `}
+                                >
+                                    <span class="flex items-center">
+                                        {heading.depth > 1 && (
+                                            <span class="mr-2 text-neutral-400 dark:text-neutral-600">
+                                                {'-'.repeat(heading.depth - 1)}
+                                            </span>
+                                        )}
+                                        {heading.text}
+                                    </span>
+                                </a>
+                            ))
+                        ) : (
+                            <p class="text-sm text-neutral-500 dark:text-neutral-400">暂无目录</p>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 添加目录折叠功能
+        const tocToggle = document.getElementById('toc-toggle');
+        const tocContent = document.getElementById('toc-content');
+        let isExpanded = true;
+
+        tocToggle?.addEventListener('click', () => {
+            isExpanded = !isExpanded;
+            if (tocContent) {
+                tocContent.style.display = isExpanded ? 'block' : 'none';
+            }
+            if (tocToggle) {
+                tocToggle.innerHTML = isExpanded 
+                    ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>'
+                    : '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>';
+            }
+        });
+
+        // 添加目录项点击滚动效果
+        document.querySelectorAll('#toc-content a').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = anchor.getAttribute('href')?.slice(1);
+                const targetElement = document.getElementById(targetId || '');
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+
     <style is:inline>
         html.dark .astro-code,
         html.dark .astro-code span {
             color: var(--shiki-dark) !important;
             background-color: var(--shiki-dark-bg) !important;
         }
-</style>
+
+        /* 修改滚动条样式 */
+        .bg-white::-webkit-scrollbar,
+        .dark\:bg-neutral-900\/30::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .bg-white::-webkit-scrollbar-track,
+        .dark\:bg-neutral-900\/30::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .bg-white::-webkit-scrollbar-thumb,
+        .dark\:bg-neutral-900\/30::-webkit-scrollbar-thumb {
+            background-color: rgba(155, 155, 155, 0.5);
+            border-radius: 3px;
+        }
+
+        html.dark .bg-white::-webkit-scrollbar-thumb,
+        html.dark .dark\:bg-neutral-900\/30::-webkit-scrollbar-thumb {
+            background-color: rgba(155, 155, 155, 0.3);
+        }
+
+        /* 目录内容样式 */
+        #toc-content {
+            transition: all 0.3s ease;
+        }
+
+        #toc-content a {
+            color: var(--tw-prose-headings);
+            text-decoration: none;
+            line-height: 1.8;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 2px 0;
+            display: block;
+        }
+
+        #toc-content a:hover {
+            color: var(--tw-prose-links);
+            background-color: var(--tw-prose-bg-soft);
+        }
+
+        html.dark #toc-content a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
 </BaseLayout>
