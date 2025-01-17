@@ -20,9 +20,14 @@ type Props = CollectionEntry<'posts'>
 const post = Astro.props
 const { Content, remarkPluginFrontmatter } = await post.render()
 
-const category: CollectionEntry<'categories'> = (await getCollection('categories')).filter(
-    c => c.slug === post.data.category,
-).pop()
+// 报错原因：pop后可能返回undefined，而这里定义的category不能是undefined；所以需要确保category总是一个有效的对象
+// const category: CollectionEntry<'categories'> = (await getCollection('categories')).filter(
+//     c => c.slug === post.data.category,
+// ).pop() 
+
+const category = (await getCollection('categories')).filter(
+    c => c.slug === post.data.category
+).pop() ?? { id: '', render: async () => ({}), slug: '', body: '', collection: 'categories', data: { title: '', description: '' } };
 
 const tags = post.data.tags ?? [category.slug]
 const URL = Astro.url.href
