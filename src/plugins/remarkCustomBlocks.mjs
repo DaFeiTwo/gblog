@@ -37,13 +37,11 @@ export function remarkCustomBlocks() {
             }
 
             if (isInfoBlock) {
-                // 创建新的 HTML 节点
+                // 创建新的 HTML 节点，确保结构与样式定义匹配
                 const newNode = {
                     type: 'html',
                     value: `<div class="custom-block info">
-                        <div class="flex items-center gap-2">
-                            <div class="flex-1">${content.trim()}</div>
-                        </div>
+                        <p>${content.trim()}</p>
                     </div> <br>`
                 }
 
