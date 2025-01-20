@@ -180,7 +180,7 @@ const relativeTime = timeago(post.data.pubDate); //显示为几天前
         </section>
 
         <!-- 目录 -->
-        <div class="hidden lg:block fixed top-[7.5rem]" style="right: 5.0rem; width: 16rem;">
+        <div class="hidden lg:block fixed top-[7.5rem] right-[max(0px,calc((100vw-105rem)/2))] w-[16rem] pr-4">
             <div class="h-full">
                 <div class="bg-white dark:bg-neutral-900/30 p-4 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700" 
                      style="max-height: calc(100vh - 32rem); height: auto;">
@@ -245,17 +245,44 @@ const relativeTime = timeago(post.data.pubDate); //显示为几天前
             }
         });
 
-        // 添加目录项点击滚动效果
+        // 修改目录项点击滚动效果
         document.querySelectorAll('#toc-content a').forEach(anchor => {
             anchor.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetId = anchor.getAttribute('href')?.slice(1);
                 const targetElement = document.getElementById(targetId || '');
                 if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    const headerOffset = 100; // 设置偏移量，根据您的导航栏高度调整
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
                 }
             });
         });
+
+        // 添加目录滚动处理
+        if (tocContent) {
+            // 启用鼠标滚轮滚动
+            tocContent.addEventListener('wheel', (e) => {
+                // 阻止事件冒泡，避免触发整个页面的滚动
+                e.stopPropagation();
+                
+                const delta = e.deltaY;
+                tocContent.scrollTop += delta;
+                
+                // 如果已经到达顶部或底部，允许页面滚动
+                if (
+                    (tocContent.scrollTop === 0 && delta < 0) || 
+                    (tocContent.scrollTop + tocContent.clientHeight === tocContent.scrollHeight && delta > 0)
+                ) {
+                    e.preventDefault();
+                }
+            });
+        }
     </script>
 
     <style is:inline>
@@ -266,49 +293,67 @@ const relativeTime = timeago(post.data.pubDate); //显示为几天前
         }
 
         /* 修改滚动条样式 */
-        .bg-white::-webkit-scrollbar,
-        .dark\:bg-neutral-900\/30::-webkit-scrollbar {
-            width: 6px;
+        #toc-content {
+            /* 默认隐藏滚动条 */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
         }
 
-        .bg-white::-webkit-scrollbar-track,
-        .dark\:bg-neutral-900\/30::-webkit-scrollbar-track {
+        #toc-content::-webkit-scrollbar {
+            width: 6px;
+            background: transparent;
+            /* 默认隐藏 */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #toc-content::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        .bg-white::-webkit-scrollbar-thumb,
-        .dark\:bg-neutral-900\/30::-webkit-scrollbar-thumb {
+        #toc-content::-webkit-scrollbar-thumb {
             background-color: rgba(155, 155, 155, 0.5);
             border-radius: 3px;
         }
 
-        html.dark .bg-white::-webkit-scrollbar-thumb,
-        html.dark .dark\:bg-neutral-900\/30::-webkit-scrollbar-thumb {
+        html.dark #toc-content::-webkit-scrollbar-thumb {
             background-color: rgba(155, 155, 155, 0.3);
         }
 
-        /* 目录内容样式 */
+        /* 鼠标悬停时显示滚动条 */
+        #toc-content:hover::-webkit-scrollbar {
+            opacity: 1;
+        }
+
+        /* 确保内容可以滚动 */
         #toc-content {
-            transition: all 0.3s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
-        #toc-content a {
-            color: var(--tw-prose-headings);
-            text-decoration: none;
-            line-height: 1.8;
-            padding: 4px 8px;
-            border-radius: 4px;
-            margin: 2px 0;
-            display: block;
+        /* 添加新的响应式布局样式 */
+        @media (min-width: 1280px) and (max-width: 1536px) {
+            .right-\[max\(0px\,calc\(\(100vw-80rem\)\/2\)\)\] {
+                right: max(1rem, calc((100vw - 80rem)/2));
+            }
         }
 
-        #toc-content a:hover {
-            color: var(--tw-prose-links);
-            background-color: var(--tw-prose-bg-soft);
+        @media (min-width: 1536px) {
+            .right-\[max\(0px\,calc\(\(100vw-80rem\)\/2\)\)\] {
+                right: calc((100vw - 80rem)/2);
+            }
         }
 
-        html.dark #toc-content a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+        /* 确保目录容器在较小屏幕上有合适的间距 */
+        @media (max-width: 1280px) {
+            .right-\[max\(0px\,calc\(\(100vw-80rem\)\/2\)\)\] {
+                right: 1rem;
+            }
+        }
+
+        /* 为标题添加滚动时的额外上边距 */
+        :target {
+            scroll-margin-top: 100px; // 与 headerOffset 相同的值
         }
     </style>
 </BaseLayout>
