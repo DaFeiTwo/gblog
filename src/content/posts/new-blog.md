@@ -10,9 +10,9 @@ selected: true
 ---
 
 :::info
-💡 起因：在逛 2024 年终分享的时候，偶然看见一个[大佬的分享](about:blank)，之后看他的主页，翻了翻，发现有一个开源的博客文章，[如何快速搭建自己的博客网站](https://godruoyi.com/posts/how-to-build-your-blog/)，于是乎，按照步骤，开始部署开发属于自己的博客（ps：站在巨人的肩膀上看世界）
+💡 起因：在逛 2024 年终分享的时候，偶然看见一个[大佬的分享](https://godruoyi.com/posts/2024/)，之后看他的主页，翻了翻，发现有一个开源的博客文章，[如何快速搭建自己的博客网站](https://godruoyi.com/posts/how-to-build-your-blog/)，于是乎，按照步骤，开始部署开发属于自己的博客（ps：站在巨人的肩膀上看世界）
 
-:::
+
 
 
 

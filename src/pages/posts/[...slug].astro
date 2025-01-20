@@ -358,5 +358,37 @@ const relativeTime = timeago(post.data.pubDate); //显示为几天前
         :target {
             scroll-margin-top: 100px; // 与 headerOffset 相同的值
         }
+
+        /* 添加提示框样式 */
+        .prose .custom-block {
+            margin: 1rem 0;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            background-color: rgb(241 245 249 / 0.8);
+            border: 1px solid rgb(226 232 240 / 1);
+        }
+
+        .prose .custom-block.info {
+            background-color: rgb(240 249 255 / 0.8);
+            border: 1px solid rgb(186 230 253 / 1);
+        }
+
+        html.dark .prose .custom-block.info {
+            background-color: rgb(30 58 138 / 0.15);
+            border: 1px solid rgb(59 130 246 / 0.2);
+        }
+
+        .prose .custom-block p {
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .prose .custom-block p:first-of-type {
+            margin-top: 0;
+        }
+
+        .prose .custom-block p:last-of-type {
+            margin-bottom: 0;
+        }
     </style>
 </BaseLayout>

@@ -7,6 +7,7 @@ import partytown from '@astrojs/partytown'
 import { SITE } from './src/config.ts'
 import { remarkReadingTime } from './src/support/plugins.ts'
 import { uploadAssetsToS3 } from './src/support/uploader.ts'
+import { remarkCustomBlocks } from './src/plugins/remarkCustomBlocks.mjs'
 
 export default defineConfig({
     site: SITE.url,
@@ -32,7 +33,7 @@ export default defineConfig({
         uploadAssetsToS3(),
     ],
     markdown: {
-        remarkPlugins: [remarkReadingTime],
+        remarkPlugins: [remarkReadingTime, remarkCustomBlocks],
         shikiConfig: {
             theme: 'github-light',
             themes: {
