@@ -37,16 +37,16 @@ export const FooterLinks = [
 ]
 
 export const Settings = {
-    GoogleAnalytics: {
-        enable: false,
-        id: 'G-TKQ4L3ZDSF',
-    },
+    // GoogleAnalytics: {
+    //     enable: false,
+    //     id: 'G-TKQ4L3ZDSF',
+    // },
 
-    // See https://github.com/umami-software/umami
-    UmamiAnalytics: {
-        enable: true,
-        dataWebsiteID: 'bf63658a-9418-4f39-a6a1-5a0cedb6e429',
-    },
+    // // See https://github.com/umami-software/umami
+    // UmamiAnalytics: {
+    //     enable: true,
+    //     dataWebsiteID: 'bf63658a-9418-4f39-a6a1-5a0cedb6e429',
+    // },
 
     Comment: {
         // todo: should I use meta or process?
@@ -84,7 +84,7 @@ export const Settings = {
             bucket: process.env.S3_BUCKET as string,
             accessKey: process.env.S3_ACCESS_KEY as string,
             secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
-            root: 'gblog',
+            root: 'draco-blog',
         },
     },
 }

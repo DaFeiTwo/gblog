@@ -1,8 +1,8 @@
 ---
 title: "部署博客记录"
-description: "首次使用Cloudflare构建了一个属于自己的博客，集成了giscus进行文章评论"
+description: "首次使用Cloudflare构建了一个属于自己的博客，并进行了一些自定义调整。"
 pubDate: "2025-01-09 20:54:00"
-category: "astro"
+category: "log"
 banner: "@images/banners/why-astro-2.webp"
 banner2: "@images/banners/why-astro.jpg"
 tags: ["Gblog", "Astro"]
@@ -36,9 +36,7 @@ fork 时，注意：取消「Copy the astro branch only」我们需要用 gblog-
 ## 本地部署
 vscode 克隆项目，顺便按照 jetbrains 的风格配置了下页面，终于顺眼了一些
 
-![](https://cdn.nlark.com/yuque/0/2025/png/21772425/1736395850814-14ad0e2e-ac4d-4a84-b80f-3db476b13e91.png)
-
-
+![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/d6f8b7c48f31f1842fc9a07d8b106ab5.png)
 
 打开终端，在项目的根目录，执行命令，即可访问链接：[http://localhost:4321/](http://localhost:4321/)，进行本地调试
 
@@ -58,7 +56,7 @@ npm run dev
 ## 云端编辑
 在项目的 github 页面，按 `.`（点，英文状态下的点），即可进入编辑页面，可以对 blog 进行小调整
 
-![](https://cdn.nlark.com/yuque/0/2025/png/21772425/1736414248524-d58bd271-cc77-462e-af49-ce45efcd2296.png)
+![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/2f9ca07655b0bd76f6579e707fcd9e0b.png)
 
 
 
@@ -68,11 +66,30 @@ npm run dev
 
 找到 src/config.ts 修改其中的 comment 对象即可
 
-![](https://cdn.nlark.com/yuque/0/2025/png/21772425/1736424562787-ae063fcb-fa54-4ad2-9d7f-18f38c99c454.png)
+```ts
+Comment: {
+    // todo: should I use meta or process?
+    // process reports an error when used locally,
+    // and meta cannot retrieve environment variables in Cloudflare environment.
+    // enable: !!(import.meta.env.COMMENT_ENABLE),
+    enable: true,
+
+    // please visit https://giscus.app/ to learn how to configure it.
+    // You can also check out this article: https://liruifengv.com/posts/add-comments-to-astro/.
+    giscus: {
+        repo: 'DaFeiTwo/gblog',
+        repoId: 'R_xxxg',
+        category: 'Announcements',
+        categoryId: 'DIC_xxxJ',
+        darkThem: 'noborder_gray',
+        lightThem: 'light',
+    },
+},
+```
 
 之后就可以拥有评论啦，注意：本地部署测试是不会出来的，需要推到远程部署
 
-![](https://cdn.nlark.com/yuque/0/2025/png/21772425/1736424619798-cc10d9cd-b3ef-4230-bbd6-deab0988425f.png)
+![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/2edaa5e321ecd9ef4ddfb6fbbf64fcb4.png)
 
 
 
