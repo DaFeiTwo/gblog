@@ -92,10 +92,6 @@ Comment: {
 ![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/2edaa5e321ecd9ef4ddfb6fbbf64fcb4.png)
 
 
-
-## 资源上传到 S3 加速访问
-
-
 ## 添加目录
 完完全全交由 cursor、ChatGPT 以及 deepseek 开发 hhh，两个外籍员工，一个国内员工，开发的还不错，我这个完全不怎么会前端开发的人也开发出了「目录功能」（仅仅了解过 js css html）
 
@@ -278,6 +274,50 @@ Comment: {
         scroll-margin-top: 100px; // 与 headerOffset 相同的值
     }
 </style>
+```
+
+## 添加高亮
+添加语雀或飞书高亮样式
+
+本地部署看页面是ok的，不知道为啥cloudflare部署后样式就变了，待研究。
+
+
+## 博客日期修改格式
+目的：将博客首页的时间格式`4 months ago`改为`2025-01-09 20:54:00`
+
+文件：[...slug].astro
+
+```ts
+const pubDate = new Date(post.data.pubDate);
+const formattedDate = pubDate.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false, // 24小时制
+}).replace(/\//g, '-');
+const relativeTime = timeago(post.data.pubDate); //显示为几天前
+```
+
+并在下方的 HTML 里进行引用
+
+```html
+<li class="inline-flex items-center text-sm text-neutral-500 hover:text-neutral-600 focus:outline-none focus:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-400 dark:focus:text-neutral-400">
+    {formattedDate}
+    <svg
+        class="flex-shrink-0 size-5 text-neutral-500 dark:text-neutral-600 mx-2"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+    >
+        <path d="M6 13L10 3" stroke="currentColor" stroke-linecap="round"></path>
+    </svg>
+</li>
 ```
 
 
