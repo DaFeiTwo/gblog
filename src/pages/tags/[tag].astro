@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { timeago } from '../../support/time';
+import Image from '@components/ui/images/Image.astro';
+import BlogRecentCard from '@components/blog/BlogRecentCard.astro';
+
+export async function getStaticPaths() {
+    const posts = await getCollection('posts');
+    const tags = [...new Set(posts.flatMap(post => post.data.tags || []))];
+    
+    return tags.map(tag => ({
+        params: { tag },
+        props: {
+            posts: posts.filter(post => post.data.tags?.includes(tag))
+                .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+        }
+    }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout title={`标签: ${tag} - 文章列表`} description={`查看所有标签为 ${tag} 的文章`}>
+    <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="mx-auto text-center">
+            <div class="flex items-end justify-center gap-x-4">
+                <h2 class="text-3xl font-bold text-neutral-800 dark:text-neutral-200 md:text-4xl">标签: {tag}</h2>
+                <p class="mb-1 text-lg text-neutral-600 dark:text-neutral-400">共 {posts.length} 篇文章</p>
+            </div>
+        </div>
+    </div>
+    <BlogRecentCard blogs={posts} />
+</BaseLayout>
