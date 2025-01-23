@@ -5,7 +5,7 @@ pubDate: "2025-01-09 20:54:00"
 category: "log"
 banner: "@images/banners/why-astro-2.webp"
 banner2: "@images/banners/why-astro.jpg"
-tags: ["Gblog", "Astro"]
+tags: ["博客", "Astro"]
 selected: true
 ---
 

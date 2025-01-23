@@ -6,8 +6,8 @@ import sitemap from '@astrojs/sitemap'
 import partytown from '@astrojs/partytown'
 import { SITE } from './src/config.ts'
 import { remarkReadingTime } from './src/support/plugins.ts'
+import { remarkCustomBlocks } from './src/support/plugins.ts'
 import { uploadAssetsToS3 } from './src/support/uploader.ts'
-import { remarkCustomBlocks } from './src/plugins/remarkCustomBlocks.mjs'
 
 export default defineConfig({
     site: SITE.url,
