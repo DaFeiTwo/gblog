@@ -5,6 +5,21 @@ import { timeago } from '../../support/time';
 import Image from '@components/ui/images/Image.astro';
 import BlogRecentCard from '@components/blog/BlogRecentCard.astro';
 
+// 获取所有标签及其文章数量
+async function getAllTags() {
+    const posts = await getCollection('posts');
+    const tagMap = new Map();
+    
+    posts.forEach(post => {
+        (post.data.tags || []).forEach(tag => {
+            tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+        });
+    });
+    
+    return Array.from(tagMap.entries()).map(([tag, count]) => ({ tag, count }));
+}
+
+// 提取博客文章所有不重复的tag，并创建对应的路由[tag页面的blog文章按发布时间降序]
 export async function getStaticPaths() {
     const posts = await getCollection('posts');
     const tags = [...new Set(posts.flatMap(post => post.data.tags || []))];
@@ -20,6 +35,7 @@ export async function getStaticPaths() {
 
 const { tag } = Astro.params;
 const { posts } = Astro.props;
+const allTags = await getAllTags();
 ---
 
 <BaseLayout title={`标签: ${tag} - 文章列表`} description={`查看所有标签为 ${tag} 的文章`}>
@@ -32,4 +48,22 @@ const { posts } = Astro.props;
         </div>
     </div>
     <BlogRecentCard blogs={posts} />
+
+    <!-- 所有标签展示区域 -->
+    <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="mx-auto text-center mb-8">
+            <h2 class="text-3xl font-bold text-neutral-800 dark:text-neutral-200 md:text-4xl">所有标签</h2>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {allTags.map(({ tag: tagName, count }) => (
+                <a
+                    href={`/tags/${tagName}`}
+                    class={`flex items-center justify-between p-4 rounded-lg ${tagName === tag ? 'bg-orange-100 dark:bg-orange-900' : 'bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700'} transition-colors duration-200`}
+                >
+                    <span class="text-lg font-medium text-neutral-800 dark:text-neutral-200">{tagName}</span>
+                    <span class="text-sm text-neutral-600 dark:text-neutral-400">{count} 篇</span>
+                </a>
+            ))}
+        </div>
+    </div>
 </BaseLayout>
