@@ -36,7 +36,7 @@ fork 时，注意：取消「Copy the astro branch only」我们需要用 gblog-
 ## 本地部署
 vscode 克隆项目，顺便按照 jetbrains 的风格配置了下页面，终于顺眼了一些
 
-![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/d6f8b7c48f31f1842fc9a07d8b106ab5.png)
+![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/02/LXgFIOK.png)
 
 打开终端，在项目的根目录，执行命令，即可访问链接：[http://localhost:4321/](http://localhost:4321/)，进行本地调试
 
@@ -56,7 +56,7 @@ npm run dev
 ## 云端编辑
 在项目的 github 页面，按 `.`（点，英文状态下的点），即可进入编辑页面，可以对 blog 进行小调整
 
-![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/2f9ca07655b0bd76f6579e707fcd9e0b.png)
+![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/02/LK7FIOK.png)
 
 
 
@@ -89,7 +89,7 @@ Comment: {
 
 之后就可以拥有评论啦，注意：本地部署测试是不会出来的，需要推到远程部署
 
-![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/2edaa5e321ecd9ef4ddfb6fbbf64fcb4.png)
+![](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/02/H324IOK.png)
 
 
 ## 添加目录
