@@ -3,8 +3,8 @@ import type { NavigationLink, Site } from './types.ts'
 export const SITE: Site = {
     author: '码屿',
     url: 'https://gblog-draco.pages.dev/',
-    title: '码屿|人微言轻',
-    description: '码屿\'s personal blog, I enjoy the process of building something using any technology stack',
+    title: 'CodeIsland「码屿」',
+    description: 'CodeIsland\'s personal blog, I enjoy the process of building something using any technology stack',
     shortDescription: '',
 }
 
