@@ -22,7 +22,7 @@ const postMap: Map<string, CollectionEntry<'posts'>[]> = (await getCollection('p
 }, new Map<string, CollectionEntry<'posts'>[]>())
 
 const categories = await getCollection('categories')
-const customOrder = ['tech', 'ai', 'log', 'life', 'read', 'watch'];  // 定义排序规则
+const customOrder = ['tech', 'log', 'english', 'life', 'read', 'money'];  // 定义排序规则
 const sortedCategories = categories.sort((a, b) => {
     return customOrder.indexOf(a.slug) - customOrder.indexOf(b.slug);  // 按自定义规则排序
 });

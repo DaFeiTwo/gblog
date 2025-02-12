@@ -1,4 +1,4 @@
 ---
 title: '读书观影'
-description: '记录所思所想'
+description: '「所思」「所想」「所感」'
 ---
