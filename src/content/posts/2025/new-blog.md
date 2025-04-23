@@ -4,7 +4,7 @@ description: "首次使用Cloudflare构建了一个属于自己的博客，并�
 pubDate: "2025-01-09 20:54:00"
 category: "log"
 banner: "@images/banners/why-astro-2.webp"
-banner2: "@images/banners/why-astro.jpg"
+# banner2: "@images/banners/why-astro.jpg"
 tags: ["博客", "Astro"]
 selected: true
 ---

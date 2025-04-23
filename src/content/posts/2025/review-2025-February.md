@@ -3,7 +3,7 @@ title: "二月碎碎念"
 description: "过年回来后的二月生活小结"
 pubDate: "2025-03-01 00:00:00"
 category: "life"
-banner2: "https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/03/ogUiHPK.jpeg"
+# banner2: "https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/03/ogUiHPK.jpeg"
 banner: "https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/03/x6ZiHPK.jpeg"
 tags: ["总结"]
 selected: true

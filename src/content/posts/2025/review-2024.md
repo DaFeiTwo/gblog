@@ -4,7 +4,7 @@ description: "「持续学习」的一年"
 pubDate: "2025-01-28 00:00:00"
 category: "life"
 banner: "https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/02/3sUxNOK.jpeg"
-banner2: "https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/02/QQexNOK.jpeg"
+# banner2: "https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/02/QQexNOK.jpeg"
 tags: ["总结"]
 selected: true
 ---
