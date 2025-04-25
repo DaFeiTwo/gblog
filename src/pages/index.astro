@@ -7,6 +7,7 @@ import HeroSection from '@components/ui/sections/HeroSection.astro'
 import FeaturesSection from '@components/ui/sections/FeaturesSection.astro'
 import HeroSectionAlt from '@components/ui/sections/HeroSectionAlt.astro'
 import blogHeroImg from '@images/null-island-color.svg'
+import HeatMap from '@/components/ui/sections/HeatMap.astro'
 
 const posts: CollectionEntry<'posts'>[] = (await getCollection('posts')).sort(
     (a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -23,8 +24,6 @@ const posts: CollectionEntry<'posts'>[] = (await getCollection('posts')).sort(
         src={blogHeroImg}
         alt="CodeIsland's blog"
     />
-
-    <FeaturesSection />
 
     <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
         <div class="mx-auto mb-10 max-w-2xl text-center lg:mb-14">
@@ -43,10 +42,15 @@ const posts: CollectionEntry<'posts'>[] = (await getCollection('posts')).sort(
             }
         </div>
     </section>
+    
+    <HeatMap />
 
     <HeroSectionAlt
         title="Fellow me on GitHub"
         subTitle="I love open source and have some small tools on my GitHub. You can get me more by checking out my code"
         url="https://github.com/godruoyi/gblog"
     />
+
+    <FeaturesSection />
+    
 </BaseLayout>
