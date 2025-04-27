@@ -1,4 +1,40 @@
 ---
+title: "博客热力图"
+description: "给自己的博客 添砖加瓦，新增热力图！"
+pubDate: "2025-04-25 19:19:25"
+category: "log"
+banner: "https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/04/AVFbMrK.png"
+tags: ["博客", "热力图"]
+selected: true
+---
+
+
+# 背景
+偶然间，看到一个[大佬的博客](https://pensieve.wangxindi.org/2024/06/18/2024-06-18-blogfurnish2/#%E7%83%AD%E5%8A%9B%E5%9B%BE)，展示博客热力图，灵机一动，我也想加一个 hhh，于是乎，说干就干！
+
+![image.png](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/04/fPhBMrK.png)
+
+# 准备
+采用 echarts 制作热力图，网址：[Examples - Apache ECharts](https://echarts.apache.org/examples/zh/index.html#chart-type-heatmap)
+
+想实现功能：展示最近一年的博客更新信息，鼠标 hover 时，显示 title、date 以及字数，点击后，可以跳转对应的博客内容。
+
+开问 AI，很快嗷，给出了一个显示热力图的模版，给力。但莫名的就是热力图不显示图例。
+
+![clipboard.png](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/04/6CHBMrK.png)
+
+# 解决
+搞了大半天，依旧 AI 没解决。
+
+最后自己改吧，发现大佬这里，创建了两个 map，一个存储了 date、字数信息，另一个存储了 date、title、字数以及 url 信息。
+
+![clipboard.png](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/04/FFnBMrK.png)
+
+在最后，给热力图传输数据的格式，是第一个 map「日期和字数」即可，而第二个 map「日期、字数、title 和 url」是给通过 date 的这个 key 获取到字数、title 和 url 这三个值的。直接给热力图传递第二个 map 是会匹配不上，所以导致热力图不显示图例。
+
+## 全部代码
+```javascript
+---
 // 首页 热力图
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
@@ -148,5 +184,22 @@ const postsData = posts.map(post => ({
 
   });
 </script>
+
+```
+
+
+
+## 显示样式
+点击即可跳转到对应的博客内容~
+
+![clipboard.png](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/04/NblBMrK.png)
+
+
+
+# 后续
+深色模式匹配还待调整...「现在深色情况下，完全没法看。」
+
+
+
 
 
