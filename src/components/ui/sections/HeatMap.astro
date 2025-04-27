@@ -73,6 +73,9 @@ const postsData = posts.map(post => ({
         }
     }
     
+    // 检测是否为深色模式
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    
     const option = {
       title: {
         top: 20,  // 调整顶部间距适应新字体大小
@@ -81,7 +84,7 @@ const postsData = posts.map(post => ({
         textStyle: {
           fontSize: 30,  // 匹配 text-3xl (1.875rem = 30px)
           fontWeight: 'bold',
-          color: '#1f2937', // 对应 text-neutral-800
+          color: isDarkMode ? '#e5e5e5' : '#1f2937', // 深色模式使用 neutral-200，浅色模式使用 neutral-800
           fontFamily: 'ui-sans-serif, system-ui' // 继承 Tailwind 默认字体
         }
       },
@@ -93,12 +96,15 @@ const postsData = posts.map(post => ({
         left: 'center',
         top: 65,
         pieces: [
-        //   {min: 0, max: 0, color: '#ebedf0'},          // 无数据时的颜色保持灰白
+          // {min: 0, max: 0, color: '#ebedf0'},          // 无数据时的颜色保持灰白
           {min: 1, max: 1000, color: '#ffd8cc'},       // 最浅的橙色
           {min: 1001, max: 3000, color: '#ffb199'},    // 浅橙色
           {min: 3001, max: 6000, color: '#ff8566'},    // 中等橙色
           {min: 6001, color: '#fa5a15'}                // 最深的橙色
-        ]
+        ],
+        textStyle: {
+          color: isDarkMode ? '#d4d4d4' : '#525252' // 深色模式使用 neutral-300，浅色模式使用 neutral-600
+        }
       },
       tooltip: { // 鼠标悬停显示文章信息
         formatter: function (params) {
@@ -117,17 +123,20 @@ const postsData = posts.map(post => ({
           borderWidth: 0.5
         },
         yearLabel: {
-            show: true
+          show: true,
+          color: isDarkMode ? '#d4d4d4' : '#525252' // 深色模式使用 neutral-300，浅色模式使用 neutral-600
         },
         dayLabel: {
           firstDay: 1, // 从周一开始
-          nameMap: ['日', '一', '', '三', '', '五', '']
+          nameMap: ['日', '一', '', '三', '', '五', ''],
+          color: isDarkMode ? '#d4d4d4' : '#525252' // 深色模式使用 neutral-300，浅色模式使用 neutral-600
         },
         monthLabel: {
           nameMap: [
             '1月', '2月', '3月', '4月', '5月', '6月',
             '7月', '8月', '9月', '10月', '11月', '12月'
-          ]
+          ],
+          color: isDarkMode ? '#d4d4d4' : '#525252' // 深色模式使用 neutral-300，浅色模式使用 neutral-600
         }
       },
       series: {
@@ -144,6 +153,21 @@ const postsData = posts.map(post => ({
       const post = dateMap.get(params.data[0]);
       const link = window.location.origin + post.url;
       window.open(link, '_blank').focus();
+    });
+    
+    // 监听主题变化并重新渲染图表
+    window.addEventListener('on-hs-appearance-change', function(e) {
+      const isDark = e.detail === 'dark';
+      
+      // 更新文字颜色
+      option.title.textStyle.color = isDark ? '#e5e5e5' : '#1f2937';
+      option.visualMap.textStyle.color = isDark ? '#d4d4d4' : '#525252';
+      option.calendar.yearLabel.color = isDark ? '#d4d4d4' : '#525252';
+      option.calendar.dayLabel.color = isDark ? '#d4d4d4' : '#525252';
+      option.calendar.monthLabel.color = isDark ? '#d4d4d4' : '#525252';
+      
+      // 重新应用配置
+      myChart.setOption(option);
     });
 
   });
