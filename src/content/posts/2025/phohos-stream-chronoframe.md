@@ -322,7 +322,7 @@ server {
 ![image.png](https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/10/sk9lnzK.png)
 
 
-## 四、后面规划
+## 五、后面规划
 2025年10月14日20:50:45，暂时先想到：
 1. Nginx conf配置的有点乱，都写在一个配置文件里了
 2. 把博客的网址也解析到kalami.icu这个域名下
