@@ -2,13 +2,37 @@
 import type { CollectionEntry } from 'astro:content'
 import { getCollection } from 'astro:content'
 import BaseLayout from '@layouts/BaseLayout.astro'
-import BlogTimeline from '@components/blog/BlogTimeline.astro'
 import { SITE } from '@/config'
+import { formatDateTime } from '@support/time'
+import Image from '@components/ui/images/Image.astro'
 
 const posts: CollectionEntry<'posts'>[] = (await getCollection('posts')).sort(
     (a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 )
-const description = `Godruoyi All Posts, Currently written ${posts.length} articles. Let's keep up the good work!`
+
+// 按年份和月份分组
+const postsByYearMonth = posts.reduce((acc, post) => {
+    const date = new Date(post.data.pubDate)
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1 // 0-11 转为 1-12
+    const yearMonth = `${year}-${month.toString().padStart(2, '0')}`
+    
+    if (!acc[year]) {
+        acc[year] = {}
+    }
+    if (!acc[year][yearMonth]) {
+        acc[year][yearMonth] = []
+    }
+    acc[year][yearMonth].push(post)
+    return acc
+}, {} as Record<number, Record<string, CollectionEntry<'posts'>[]>>)
+
+const years = Object.keys(postsByYearMonth).sort((a, b) => Number(b) - Number(a))
+
+// 月份名称映射
+const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+
+const description = `CodeIsland All Posts, Currently written ${posts.length} articles. Let's keep up the good work!`
 const URL = Astro.url.href
 ---
 
@@ -31,13 +55,242 @@ const URL = Astro.url.href
         },
     }}
 >
-    <section class="mx-auto max-w-[85rem] mt-10 lg:mt-10 px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-        <div class="max-w-3xl mx-auto mb-10 lg:mb-14">
-            <h2 class="text-3xl font-bold text-neutral-800 dark:text-neutral-200 md:text-4xl md:leading-tight">Timeline</h2>
-            <p class="mt-4 text-lg group text-pretty text-neutral-600 dark:text-neutral-400">
-                目前一共写了 <span class="group-hover:text-yellow-500 group-hover:dark:text-yellow-400">{posts.length}</span> 篇文章，再接再厉吧 💪
+    <section class="mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
+        <!-- 标题区域 -->
+        <div class="max-w-4xl mx-auto mb-12 lg:mb-16">
+            <h1 class="text-4xl font-bold text-neutral-800 dark:text-neutral-200 md:text-5xl lg:text-6xl">
+                Timeline
+            </h1>
+            <p class="mt-4 text-lg text-neutral-600 dark:text-neutral-400">
+                目前一共写了 
+                <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 text-base font-bold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30 rounded-md">
+                    {posts.length}
+                </span> 
+                篇文章，再接再厉吧 💪
             </p>
         </div>
-        {posts.map(p => <BlogTimeline blog={p} />)}
+
+        <!-- 时间线内容 -->
+        <div class="max-w-4xl mx-auto">
+            {years.map((year) => {
+                const yearMonths = Object.keys(postsByYearMonth[year]).sort((a, b) => b.localeCompare(a))
+                const yearPostCount = yearMonths.reduce((sum, ym) => sum + postsByYearMonth[year][ym].length, 0)
+                
+                return (
+                    <div class="mb-12 year-section" data-year={year}>
+                        <!-- 年份标题 - 吸顶效果 -->
+                        <div class="year-sticky-header sticky top-[5.5rem] z-40 bg-neutral-200/95 dark:bg-neutral-800/95 backdrop-blur-md py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 flex items-center gap-4 mb-8">
+                            <h2 class="text-3xl font-bold text-neutral-800 dark:text-neutral-200 flex items-center">
+                                <span class="year-text">{year}</span>
+                                <span class="month-text hidden flex items-center transition-all duration-300 ease-in-out">
+                                    <span class="mx-2 text-2xl text-neutral-400 dark:text-neutral-500">·</span>
+                                    <span class="text-2xl font-semibold text-neutral-700 dark:text-neutral-300 transition-opacity duration-300"></span>
+                                </span>
+                            </h2>
+                            <div class="flex-1 h-px bg-[linear-gradient(to_right,transparent,#a3a3a3_30%,#a3a3a3)] dark:bg-[linear-gradient(to_right,transparent,#525252_30%,#525252)]"></div>
+                            <span class="count-text text-sm text-neutral-500 dark:text-neutral-400 transition-all duration-300">
+                                {yearPostCount} 篇
+                            </span>
+                        </div>
+
+                        <!-- 按月份分组的文章 -->
+                        {yearMonths.map((yearMonth, yearMonthIndex) => {
+                            const [y, m] = yearMonth.split('-')
+                            const monthIndex = parseInt(m) - 1
+                            const monthPosts = postsByYearMonth[year][yearMonth]
+                            
+                            return (
+                                <div class="mb-8 month-section" data-month={monthNames[monthIndex]} data-count={monthPosts.length}>
+                                    <!-- 月份标题 - 正常显示 -->
+                                    <div class="month-normal-header flex items-center gap-3 mb-4 pl-8">
+                                        <h3 class="text-lg font-semibold text-neutral-700 dark:text-neutral-300">
+                                            {monthNames[monthIndex]}
+                                        </h3>
+                                        <div class="flex-1 h-px bg-neutral-300 dark:bg-neutral-600"></div>
+                                        <span class="text-xs text-neutral-400 dark:text-neutral-500">
+                                            {monthPosts.length} 篇
+                                        </span>
+                                    </div>
+
+                                    <!-- 文章列表 -->
+                                    <div class="space-y-6">
+                                        {monthPosts.map((post, postIndex) => {
+                                            const isFirstPostOfYear = yearMonthIndex === 0 && postIndex === 0
+                                            
+                                            return (
+                                                <div class="relative pl-8 pb-6 group">
+                                                    <!-- 时间线 -->
+                                                    <div class="absolute left-0 top-0 bottom-0 w-px bg-neutral-200 dark:bg-neutral-700">
+                                                        {isFirstPostOfYear && (
+                                                            <div class="absolute top-[0.4rem] left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-orange-500 dark:bg-orange-400 ring-4 ring-white dark:ring-neutral-950"></div>
+                                                        )}
+                                                    </div>
+                                                    
+                                                    <!-- 时间点 -->
+                                                    {!isFirstPostOfYear && (
+                                                        <div class="absolute left-0 top-[0.6rem] w-2 h-2 rounded-full bg-neutral-300 dark:bg-neutral-600 group-hover:bg-orange-500 dark:group-hover:bg-orange-400 transition-colors duration-200 -translate-x-[3px]"></div>
+                                                    )}
+
+                                                    <!-- 文章卡片 -->
+                                                    <a 
+                                                        href={`/posts/${post.slug}`}
+                                                        class="flex gap-4 bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden hover:shadow-md hover:border-orange-300 dark:hover:border-orange-700 transition-all duration-200"
+                                                    >
+                                                        <!-- 缩略图 -->
+                                                        <div class="flex-shrink-0 w-32 h-32 sm:w-40 sm:h-40 overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+                                                            <Image
+                                                                src={post.data.banner}
+                                                                alt={post.data.title}
+                                                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                                draggable="false"
+                                                                loading="lazy"
+                                                                inferSize={true}
+                                                            />
+                                                        </div>
+
+                                                        <!-- 文字内容 -->
+                                                        <div class="flex-1 p-5 min-w-0">
+                                                            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+                                                                <h3 class="text-lg font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors duration-200 truncate">
+                                                                    {post.data.title}
+                                                                </h3>
+                                                                <time class="text-sm text-neutral-500 dark:text-neutral-400 whitespace-nowrap flex-shrink-0">
+                                                                    {formatDateTime(post.data.pubDate)}
+                                                                </time>
+                                                            </div>
+                                                            <p class="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2 mb-3">
+                                                                {post.data.description}
+                                                            </p>
+                                                            
+                                                            <!-- 分类标签 -->
+                                                            <div class="flex items-center gap-2">
+                                                                <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                                                                    {post.data.category}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                )
+            })}
+        </div>
     </section>
+
+    <script>
+        // 处理年份和月份的吸顶效果
+        function updateStickyHeaders() {
+            const yearSections = document.querySelectorAll('.year-section');
+            
+            yearSections.forEach((yearSection) => {
+                const yearHeader = yearSection.querySelector('.year-sticky-header');
+                const monthSections = yearSection.querySelectorAll('.month-section');
+                const monthTextContainer = yearHeader.querySelector('.month-text');
+                const monthTextSpan = monthTextContainer.querySelector('span:last-child');
+                const countText = yearHeader.querySelector('.count-text');
+                
+                let activeMonth = null;
+                let lastPassedMonth = null; // 记录最后一个滚过的月份
+                
+                // 找到所有已经滚过吸顶位置的月份
+                monthSections.forEach((monthSection) => {
+                    const monthHeader = monthSection.querySelector('.month-normal-header');
+                    const rect = monthHeader.getBoundingClientRect();
+                    
+                    // 月份标题在吸顶位置上方（已经滚过）
+                    if (rect.top < 120) {
+                        lastPassedMonth = {
+                            name: monthSection.getAttribute('data-month'),
+                            count: monthSection.getAttribute('data-count'),
+                            element: monthSection
+                        };
+                        
+                        // 检查这个月份的内容是否还在视口中
+                        const sectionRect = monthSection.getBoundingClientRect();
+                        if (sectionRect.bottom > 120) {
+                            activeMonth = lastPassedMonth;
+                        }
+                    }
+                });
+                
+                // 如果没有月份内容在视口中，但有滚过的月份，使用最后滚过的月份
+                if (!activeMonth && lastPassedMonth) {
+                    activeMonth = lastPassedMonth;
+                }
+                
+                // 获取当前显示的月份
+                const currentMonth = monthTextSpan.textContent;
+                
+                // 更新显示 - 使用淡入淡出效果
+                if (activeMonth) {
+                    // 如果月份改变了，先淡出再淡入
+                    if (currentMonth !== activeMonth.name) {
+                        monthTextSpan.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            monthTextSpan.textContent = activeMonth.name;
+                            monthTextSpan.style.opacity = '1';
+                        }, 150);
+                    }
+                    
+                    // 显示月份容器（如果还没显示）
+                    if (monthTextContainer.classList.contains('hidden')) {
+                        monthTextContainer.classList.remove('hidden');
+                        // 触发重排以启动动画
+                        monthTextContainer.offsetHeight;
+                    }
+                    
+                    countText.textContent = `${activeMonth.count} 篇`;
+                } else {
+                    // 只有在页面最顶部或者没有任何月份滚过时才显示年份
+                    if (!monthTextContainer.classList.contains('hidden')) {
+                        monthTextContainer.classList.add('hidden');
+                    }
+                    
+                    const yearCount = yearHeader.getAttribute('data-year-count');
+                    if (yearCount) {
+                        countText.textContent = yearCount;
+                    }
+                }
+            });
+        }
+        
+        // 保存年份总数
+        document.querySelectorAll('.year-section').forEach((section) => {
+            const header = section.querySelector('.year-sticky-header');
+            const countText = header.querySelector('.count-text');
+            header.setAttribute('data-year-count', countText.textContent);
+        });
+        
+        // 使用 requestAnimationFrame 优化性能，并添加防抖
+        let ticking = false;
+        let lastKnownScrollPosition = 0;
+        
+        function onScroll() {
+            lastKnownScrollPosition = window.scrollY;
+            
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateStickyHeaders();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }
+        
+        window.addEventListener('scroll', onScroll, { passive: true });
+        
+        // 页面加载和视图变化时也更新
+        window.addEventListener('load', updateStickyHeaders);
+        document.addEventListener('DOMContentLoaded', updateStickyHeaders);
+        
+        // 初始化
+        setTimeout(updateStickyHeaders, 100);
+    </script>
 </BaseLayout>
