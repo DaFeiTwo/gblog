@@ -13,9 +13,20 @@ const postsData = posts.map(post => ({
 }));
 ---
 
-<div class="mx-auto w-4/5">
-  <div id="heatmap" style="width: 100%;height:280px;"></div>
-</div>
+<section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
+  <div class="mx-auto mb-10 max-w-2xl text-center lg:mb-14">
+    <h2 class="text-3xl font-bold text-neutral-800 dark:text-neutral-200 md:text-4xl md:leading-tight">
+      Blog Heat Map
+    </h2>
+    <p class="mt-1 text-pretty text-neutral-600 dark:text-neutral-400">
+      Visualizing my writing journey through time
+    </p>
+  </div>
+  
+  <div class="rounded-xl p-6 sm:p-8">
+    <div id="heatmap" class="w-full" style="height: 300px;"></div>
+  </div>
+</section>
 <!-- 通过CDN引入echarts -->
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
 <script define:vars={{ postsData }}>
@@ -77,96 +88,182 @@ const postsData = posts.map(post => ({
     const isDarkMode = document.documentElement.classList.contains('dark');
     
     const option = {
-      title: {
-        top: 20,  // 调整顶部间距适应新字体大小
-        left: 'center',
-        text: 'Blog Heat Map',
-        textStyle: {
-          fontSize: 30,  // 匹配 text-3xl (1.875rem = 30px)
-          fontWeight: 'bold',
-          color: isDarkMode ? '#e5e5e5' : '#1f2937', // 深色模式使用 neutral-200，浅色模式使用 neutral-800
-          fontFamily: 'ui-sans-serif, system-ui' // 继承 Tailwind 默认字体
-        }
-      },
       visualMap: {
         type: 'piecewise',
         min: 0,
-        max: maxWordCount,  // 确保这里有具体的数值
+        max: maxWordCount,
         orient: 'horizontal',
         left: 'center',
-        top: 65,
+        top: 20,
         pieces: [
-          // {min: 0, max: 0, color: '#ebedf0'},          // 无数据时的颜色保持灰白
-          {min: 1, max: 1000, color: '#ffd8cc'},       // 最浅的橙色
-          {min: 1001, max: 3000, color: '#ffb199'},    // 浅橙色
-          {min: 3001, max: 6000, color: '#ff8566'},    // 中等橙色
-          {min: 6001, color: '#fa5a15'}                // 最深的橙色
+          {min: 1, max: 1000, color: '#fed7aa', label: '< 1k'},
+          {min: 1001, max: 3000, color: '#fb923c', label: '1k - 3k'},
+          {min: 3001, max: 6000, color: '#f97316', label: '3k - 6k'},
+          {min: 6001, color: '#ea580c', label: '> 6k'}
         ],
         textStyle: {
-          color: isDarkMode ? '#d4d4d4' : '#525252' // 深色模式使用 neutral-300，浅色模式使用 neutral-600
-        }
+          color: isDarkMode ? '#a3a3a3' : '#737373',
+          fontSize: 12
+        },
+        itemGap: 12,
+        itemWidth: 18,
+        itemHeight: 18,
+        selectedMode: 'multiple'  // 使用多选模式，通过事件控制单选行为
       },
-      tooltip: { // 鼠标悬停显示文章信息
+      tooltip: {
         formatter: function (params) {
-          // params.data[0]这里存储的是日期
           const post = dateMap.get(params.data[0]);
-          return post.title + ' | ' + params.data[0] + ' | ' + post.wordCount + ' 字';
-        }
+          const isDark = document.documentElement.classList.contains('dark');
+          const titleColor = isDark ? '#e5e5e5' : '#262626';
+          const dateColor = isDark ? '#a3a3a3' : '#737373';
+          const countColor = isDark ? '#fb923c' : '#ea580c';
+          
+          return `<div style="padding: 8px 12px;">
+            <div style="font-weight: 600; margin-bottom: 4px; color: ${titleColor};">${post.title}</div>
+            <div style="color: ${dateColor}; font-size: 13px;">${params.data[0]}</div>
+            <div style="color: ${countColor}; font-size: 13px; margin-top: 4px;">${post.wordCount.toLocaleString()} 字</div>
+          </div>`;
+        },
+        backgroundColor: isDarkMode ? '#262626' : '#ffffff',
+        borderColor: isDarkMode ? '#404040' : '#e5e5e5',
+        borderWidth: 1,
+        textStyle: {
+          color: isDarkMode ? '#e5e5e5' : '#262626'
+        },
+        extraCssText: 'box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-radius: 8px;'
       },
       calendar: {
-        top: 120,
-        left: 30,
-        right: 30,
-        cellSize: ['auto', 13],
+        top: 90,
+        left: 60,
+        right: 40,
+        bottom: 20,
+        cellSize: ['auto', 14],
         range: getRangeArr(),
         itemStyle: {
-          borderWidth: 0.5
+          borderWidth: isDarkMode ? 2 : 3,
+          borderColor: isDarkMode ? '#2d3748' : '#f5f5f5',
+          color: isDarkMode ? '#1f2937' : '#fafafa'
         },
         yearLabel: {
           show: true,
-          color: isDarkMode ? '#d4d4d4' : '#525252' // 深色模式使用 neutral-300，浅色模式使用 neutral-600
+          fontSize: 14,
+          fontWeight: 600,
+          color: isDarkMode ? '#a3a3a3' : '#737373'
         },
         dayLabel: {
-          firstDay: 1, // 从周一开始
+          firstDay: 1,
           nameMap: ['日', '一', '', '三', '', '五', ''],
-          color: isDarkMode ? '#d4d4d4' : '#525252' // 深色模式使用 neutral-300，浅色模式使用 neutral-600
+          fontSize: 12,
+          color: isDarkMode ? '#a3a3a3' : '#737373'
         },
         monthLabel: {
           nameMap: [
             '1月', '2月', '3月', '4月', '5月', '6月',
             '7月', '8月', '9月', '10月', '11月', '12月'
           ],
-          color: isDarkMode ? '#d4d4d4' : '#525252' // 深色模式使用 neutral-300，浅色模式使用 neutral-600
+          fontSize: 13,
+          fontWeight: 500,
+          color: isDarkMode ? '#a3a3a3' : '#737373'
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: isDarkMode ? '#4b5563' : '#e5e5e5',
+            width: 2
+          }
         }
       },
       series: {
         type: 'heatmap',
         coordinateSystem: 'calendar',
-        data: dataArr
+        data: dataArr,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowColor: isDarkMode ? 'rgba(251, 146, 60, 0.5)' : 'rgba(234, 88, 12, 0.5)'
+          }
+        }
       }
     };
 
     myChart.setOption(option);
 
-    // 添加点击事件监听（修复后的版本）
+    // 添加图例点击事件监听 - 实现单选模式
+    let isAllSelected = true; // 标记是否处于全选状态
+    
+    myChart.on('legendselectchanged', function(params) {
+      const clickedName = params.name;
+      
+      // 如果当前是全选状态，点击后切换到只选中当前项
+      if (isAllSelected) {
+        const newSelected = {
+          '< 1k': clickedName === '< 1k',
+          '1k - 3k': clickedName === '1k - 3k', 
+          '3k - 6k': clickedName === '3k - 6k',
+          '> 6k': clickedName === '> 6k'
+        };
+        
+        myChart.setOption({
+          visualMap: {
+            selected: newSelected
+          }
+        });
+        
+        isAllSelected = false;
+      } else {
+        // 如果已经是单选状态，点击其他项就切换到该项
+        const newSelected = {
+          '< 1k': clickedName === '< 1k',
+          '1k - 3k': clickedName === '1k - 3k', 
+          '3k - 6k': clickedName === '3k - 6k',
+          '> 6k': clickedName === '> 6k'
+        };
+        
+        myChart.setOption({
+          visualMap: {
+            selected: newSelected
+          }
+        });
+      }
+    });
+
+    // 添加热力图点击事件监听（跳转到文章）
     myChart.on('click', function(params) {
-      const post = dateMap.get(params.data[0]);
-      const link = window.location.origin + post.url;
-      window.open(link, '_blank').focus();
+      if (params.componentType === 'series') {
+        const post = dateMap.get(params.data[0]);
+        const link = window.location.origin + post.url;
+        window.open(link, '_blank').focus();
+      }
     });
     
     // 监听主题变化并重新渲染图表
     window.addEventListener('on-hs-appearance-change', function(e) {
       const isDark = e.detail === 'dark';
       
-      // 更新文字颜色
-      option.title.textStyle.color = isDark ? '#e5e5e5' : '#1f2937';
-      option.visualMap.textStyle.color = isDark ? '#d4d4d4' : '#525252';
-      option.calendar.yearLabel.color = isDark ? '#d4d4d4' : '#525252';
-      option.calendar.dayLabel.color = isDark ? '#d4d4d4' : '#525252';
-      option.calendar.monthLabel.color = isDark ? '#d4d4d4' : '#525252';
+      // 更新颜色配置
+      option.visualMap.textStyle.color = isDark ? '#a3a3a3' : '#737373';
+      option.calendar.itemStyle.borderWidth = isDark ? 2 : 3;
+      option.calendar.itemStyle.borderColor = isDark ? '#2d3748' : '#f5f5f5';
+      option.calendar.itemStyle.color = isDark ? '#1f2937' : '#fafafa';
+      option.calendar.yearLabel.color = isDark ? '#a3a3a3' : '#737373';
+      option.calendar.dayLabel.color = isDark ? '#a3a3a3' : '#737373';
+      option.calendar.monthLabel.color = isDark ? '#a3a3a3' : '#737373';
+      option.calendar.splitLine.lineStyle.color = isDark ? '#4b5563' : '#e5e5e5';
+      option.calendar.splitLine.lineStyle.width = 2;
+      option.series.emphasis.itemStyle.shadowColor = isDark ? 'rgba(251, 146, 60, 0.5)' : 'rgba(234, 88, 12, 0.5)';
+      option.tooltip.backgroundColor = isDark ? '#262626' : '#ffffff';
+      option.tooltip.borderColor = isDark ? '#404040' : '#e5e5e5';
+      option.tooltip.textStyle.color = isDark ? '#e5e5e5' : '#262626';
       
       // 重新应用配置
+      myChart.setOption(option);
+    });
+
+    // 响应式调整
+    window.addEventListener('resize', function() {
+      myChart.resize();
+      const newRange = getRangeArr();
+      option.calendar.range = newRange;
       myChart.setOption(option);
     });
 

@@ -5,7 +5,7 @@ pubDate: "2025-02-07 16:54:22"
 category: "log"
 # banner2: "https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/02/RYVFPOK.png"
 banner: "https://pub-8869f57a52ae4837a9b3ca020e0d07fc.r2.dev/2025/02/HmEfPOK.png"
-tags: ["R2", "Tinypng", "tool"]
+tags: ["R2", "Tinypng", "图床"]
 selected: true
 ---
 
